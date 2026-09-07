@@ -226,6 +226,18 @@ src_libfabric_la_SOURCES =			\
 	src/log.c				\
 	src/var.c				\
 	src/abi_1_0.c				\
+	src/fabric_ops.c			\
+	src/fi_atomic_ops.c			\
+	src/fi_cm_ops.c				\
+	src/fi_collective_ops.c			\
+	src/fi_domain_ops.c			\
+	src/fi_endpoint_ops.c			\
+	src/fi_eq_ops.c				\
+	src/fi_ext_ops.c			\
+	src/fi_profile_ops.c			\
+	src/fi_rma_ops.c			\
+	src/fi_tagged_ops.c			\
+	src/fi_xpu_ops.c			\
 	$(common_hook_srcs)			\
 	$(common_srcs)
 

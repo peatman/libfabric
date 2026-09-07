@@ -139,18 +139,14 @@ struct fid_xpu_cntr {
 /*
  * Inline wrappers
  */
-static inline int
+int
 fi_xpu_ctx(struct fid_domain *domain, struct fi_xpu_attr *attr,
-	   struct fid_xpu_ctx **ctx, void *context)
-{
-	return domain->ops->xpu_ctx(domain, attr, ctx, context);
-}
+	   struct fid_xpu_ctx **ctx, void *context);
 
-static inline int
-fi_xpu_ctx_query(struct fid_xpu_ctx *ctx, struct fi_xpu_ctx_attr *attr)
-{
-	return ctx->ops->query(ctx, attr);
-}
+
+int
+fi_xpu_ctx_query(struct fid_xpu_ctx *ctx, struct fi_xpu_ctx_attr *attr);
+
 
 #ifdef __cplusplus
 }

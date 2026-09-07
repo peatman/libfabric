@@ -329,175 +329,116 @@ struct fid_cntr {
 
 #ifndef FABRIC_DIRECT_EQ
 
-static inline int
-fi_trywait(struct fid_fabric *fabric, struct fid **fids, int count)
-{
-	return fabric->ops->trywait(fabric, fids, count);
-}
+int
+fi_trywait(struct fid_fabric *fabric, struct fid **fids, int count);
 
-static inline FI_DEPRECATED_FUNC int
-fi_wait(struct fid_wait *waitset, int timeout)
-{
-	return waitset->ops->wait(waitset, timeout);
-}
 
-static inline FI_DEPRECATED_FUNC int
-fi_poll(struct fid_poll *pollset, void **context, int count)
-{
-	return pollset->ops->poll(pollset, context, count);
-}
+FI_DEPRECATED_FUNC int
+fi_wait(struct fid_wait *waitset, int timeout);
 
-static inline FI_DEPRECATED_FUNC int
-fi_poll_add(struct fid_poll *pollset, struct fid *event_fid, uint64_t flags)
-{
-	return pollset->ops->poll_add(pollset, event_fid, flags);
-}
 
-static inline FI_DEPRECATED_FUNC int
-fi_poll_del(struct fid_poll *pollset, struct fid *event_fid, uint64_t flags)
-{
-	return pollset->ops->poll_del(pollset, event_fid, flags);
-}
+FI_DEPRECATED_FUNC int
+fi_poll(struct fid_poll *pollset, void **context, int count);
 
-static inline int
+
+FI_DEPRECATED_FUNC int
+fi_poll_add(struct fid_poll *pollset, struct fid *event_fid, uint64_t flags);
+
+
+FI_DEPRECATED_FUNC int
+fi_poll_del(struct fid_poll *pollset, struct fid *event_fid, uint64_t flags);
+
+
+int
 fi_eq_open(struct fid_fabric *fabric, struct fi_eq_attr *attr,
-	   struct fid_eq **eq, void *context)
-{
-	return fabric->ops->eq_open(fabric, attr, eq, context);
-}
+	   struct fid_eq **eq, void *context);
 
-static inline ssize_t
+
+ssize_t
 fi_eq_read(struct fid_eq *eq, uint32_t *event, void *buf,
-	   size_t len, uint64_t flags)
-{
-	return eq->ops->read(eq, event, buf, len, flags);
-}
+	   size_t len, uint64_t flags);
 
-static inline ssize_t
-fi_eq_readerr(struct fid_eq *eq, struct fi_eq_err_entry *buf, uint64_t flags)
-{
-	return eq->ops->readerr(eq, buf, flags);
-}
 
-static inline ssize_t
+ssize_t
+fi_eq_readerr(struct fid_eq *eq, struct fi_eq_err_entry *buf, uint64_t flags);
+
+
+ssize_t
 fi_eq_write(struct fid_eq *eq, uint32_t event, const void *buf,
-	    size_t len, uint64_t flags)
-{
-	return eq->ops->write(eq, event, buf, len, flags);
-}
+	    size_t len, uint64_t flags);
 
-static inline ssize_t
+
+ssize_t
 fi_eq_sread(struct fid_eq *eq, uint32_t *event, void *buf, size_t len,
-	    int timeout, uint64_t flags)
-{
-	return eq->ops->sread(eq, event, buf, len, timeout, flags);
-}
+	    int timeout, uint64_t flags);
 
-static inline const char *
+
+const char *
 fi_eq_strerror(struct fid_eq *eq, int prov_errno, const void *err_data,
-	       char *buf, size_t len)
-{
-	return eq->ops->strerror(eq, prov_errno, err_data, buf, len);
-}
+	       char *buf, size_t len);
 
 
-static inline ssize_t fi_cq_read(struct fid_cq *cq, void *buf, size_t count)
-{
-	return cq->ops->read(cq, buf, count);
-}
 
-static inline ssize_t
-fi_cq_readfrom(struct fid_cq *cq, void *buf, size_t count, fi_addr_t *src_addr)
-{
-	return cq->ops->readfrom(cq, buf, count, src_addr);
-}
+ssize_t fi_cq_read(struct fid_cq *cq, void *buf, size_t count);
 
-static inline ssize_t
-fi_cq_readerr(struct fid_cq *cq, struct fi_cq_err_entry *buf, uint64_t flags)
-{
-	/* For compatibility with older providers. */
-	if (buf)
-		buf->src_addr = FI_ADDR_NOTAVAIL;
-	return cq->ops->readerr(cq, buf, flags);
-}
 
-static inline ssize_t
-fi_cq_sread(struct fid_cq *cq, void *buf, size_t count, const void *cond, int timeout)
-{
-	return cq->ops->sread(cq, buf, count, cond, timeout);
-}
+ssize_t
+fi_cq_readfrom(struct fid_cq *cq, void *buf, size_t count, fi_addr_t *src_addr);
 
-static inline ssize_t
+
+ssize_t
+fi_cq_readerr(struct fid_cq *cq, struct fi_cq_err_entry *buf, uint64_t flags);
+
+
+ssize_t
+fi_cq_sread(struct fid_cq *cq, void *buf, size_t count, const void *cond, int timeout);
+
+
+ssize_t
 fi_cq_sreadfrom(struct fid_cq *cq, void *buf, size_t count,
-		fi_addr_t *src_addr, const void *cond, int timeout)
-{
-	return cq->ops->sreadfrom(cq, buf, count, src_addr, cond, timeout);
-}
+		fi_addr_t *src_addr, const void *cond, int timeout);
 
-static inline int fi_cq_signal(struct fid_cq *cq)
-{
-	return cq->ops->signal(cq);
-}
 
-static inline const char *
+int fi_cq_signal(struct fid_cq *cq);
+
+
+const char *
 fi_cq_strerror(struct fid_cq *cq, int prov_errno, const void *err_data,
-	       char *buf, size_t len)
-{
-	return cq->ops->strerror(cq, prov_errno, err_data, buf, len);
-}
+	       char *buf, size_t len);
 
 
-static inline uint64_t fi_cntr_read(struct fid_cntr *cntr)
-{
-	return cntr->ops->read(cntr);
-}
 
-static inline uint64_t fi_cntr_readerr(struct fid_cntr *cntr)
-{
-	return cntr->ops->readerr(cntr);
-}
+uint64_t fi_cntr_read(struct fid_cntr *cntr);
 
-static inline int fi_cntr_add(struct fid_cntr *cntr, uint64_t value)
-{
-	return cntr->ops->add(cntr, value);
-}
 
-static inline int fi_cntr_adderr(struct fid_cntr *cntr, uint64_t value)
-{
-	return FI_CHECK_OP(cntr->ops, struct fi_ops_cntr, adderr) ?
-		cntr->ops->adderr(cntr, value) : -FI_ENOSYS;
-}
+uint64_t fi_cntr_readerr(struct fid_cntr *cntr);
 
-static inline int fi_cntr_set(struct fid_cntr *cntr, uint64_t value)
-{
-	return cntr->ops->set(cntr, value);
-}
 
-static inline int fi_cntr_seterr(struct fid_cntr *cntr, uint64_t value)
-{
-	return FI_CHECK_OP(cntr->ops, struct fi_ops_cntr, seterr) ?
-		cntr->ops->seterr(cntr, value) : -FI_ENOSYS;
-}
+int fi_cntr_add(struct fid_cntr *cntr, uint64_t value);
 
-static inline int
-fi_cntr_wait(struct fid_cntr *cntr, uint64_t threshold, int timeout)
-{
-	return cntr->ops->wait(cntr, threshold, timeout);
-}
 
-static inline int
+int fi_cntr_adderr(struct fid_cntr *cntr, uint64_t value);
+
+
+int fi_cntr_set(struct fid_cntr *cntr, uint64_t value);
+
+
+int fi_cntr_seterr(struct fid_cntr *cntr, uint64_t value);
+
+
+int
+fi_cntr_wait(struct fid_cntr *cntr, uint64_t threshold, int timeout);
+
+
+int
 fi_cq_export_xpu(struct fid_cq *cq, uint64_t flags,
-		 struct fid_xpu_cq *xpu_cq)
-{
-	return cq->ops->export_xpu(cq, flags, xpu_cq);
-}
+		 struct fid_xpu_cq *xpu_cq);
 
-static inline int
+
+int
 fi_cntr_export_xpu(struct fid_cntr *cntr, uint64_t flags,
-		   struct fid_xpu_cntr *xpu_cntr)
-{
-	return cntr->ops->export_xpu(cntr, flags, xpu_cntr);
-}
+		   struct fid_xpu_cntr *xpu_cntr);
+
 
 #endif
 

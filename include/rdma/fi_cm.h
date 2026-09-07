@@ -69,64 +69,41 @@ struct fi_ops_cm {
 
 #ifndef FABRIC_DIRECT_CM
 
-static inline int fi_setname(fid_t fid, void *addr, size_t addrlen)
-{
-	struct fid_ep *ep = (struct fid_ep *) fid;
-	return ep->cm->setname(fid, addr, addrlen);
-}
+int fi_setname(fid_t fid, void *addr, size_t addrlen);
 
-static inline int fi_getname(fid_t fid, void *addr, size_t *addrlen)
-{
-	struct fid_ep *ep = (struct fid_ep *) fid;
-	return ep->cm->getname(fid, addr, addrlen);
-}
 
-static inline int fi_getpeer(struct fid_ep *ep, void *addr, size_t *addrlen)
-{
-	return ep->cm->getpeer(ep, addr, addrlen);
-}
+int fi_getname(fid_t fid, void *addr, size_t *addrlen);
 
-static inline int fi_listen(struct fid_pep *pep)
-{
-	return pep->cm->listen(pep);
-}
 
-static inline int
+int fi_getpeer(struct fid_ep *ep, void *addr, size_t *addrlen);
+
+
+int fi_listen(struct fid_pep *pep);
+
+
+int
 fi_connect(struct fid_ep *ep, const void *addr,
-	   const void *param, size_t paramlen)
-{
-	return ep->cm->connect(ep, addr, param, paramlen);
-}
+	   const void *param, size_t paramlen);
 
-static inline int
-fi_accept(struct fid_ep *ep, const void *param, size_t paramlen)
-{
-	return ep->cm->accept(ep, param, paramlen);
-}
 
-static inline int
+int
+fi_accept(struct fid_ep *ep, const void *param, size_t paramlen);
+
+
+int
 fi_reject(struct fid_pep *pep, fid_t handle,
-	  const void *param, size_t paramlen)
-{
-	return pep->cm->reject(pep, handle, param, paramlen);
-}
+	  const void *param, size_t paramlen);
 
-static inline int fi_shutdown(struct fid_ep *ep, uint64_t flags)
-{
-	return ep->cm->shutdown(ep, flags);
-}
 
-static inline int fi_join(struct fid_ep *ep, const void *addr, uint64_t flags,
-			  struct fid_mc **mc, void *context)
-{
-	return FI_CHECK_OP(ep->cm, struct fi_ops_cm, join) ?
-		ep->cm->join(ep, addr, flags, mc, context) : -FI_ENOSYS;
-}
+int fi_shutdown(struct fid_ep *ep, uint64_t flags);
 
-static inline fi_addr_t fi_mc_addr(struct fid_mc *mc)
-{
-	return mc->fi_addr;
-}
+
+int fi_join(struct fid_ep *ep, const void *addr, uint64_t flags,
+			  struct fid_mc **mc, void *context);
+
+
+fi_addr_t fi_mc_addr(struct fid_mc *mc);
+
 
 #endif
 

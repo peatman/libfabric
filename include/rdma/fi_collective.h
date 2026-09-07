@@ -145,167 +145,108 @@ struct fi_ops_collective {
 
 #ifndef FABRIC_DIRECT_COLLECTIVE
 
-static inline int
+int
 fi_av_set(struct fid_av *av, struct fi_av_set_attr *attr,
-	  struct fid_av_set **set, void * context)
-{
-	return FI_CHECK_OP(av->ops, struct fi_ops_av, av_set) ?
-		av->ops->av_set(av, attr, set, context) : -FI_ENOSYS;
-}
+	  struct fid_av_set **set, void * context);
 
-static inline int
-fi_av_set_union(struct fid_av_set *dst, const struct fid_av_set *src)
-{
-	return dst->ops->set_union(dst, src);
-}
 
-static inline int
-fi_av_set_intersect(struct fid_av_set *dst, const struct fid_av_set *src)
-{
-	return dst->ops->intersect(dst, src);
-}
+int
+fi_av_set_union(struct fid_av_set *dst, const struct fid_av_set *src);
 
-static inline int
-fi_av_set_diff(struct fid_av_set *dst, const struct fid_av_set *src)
-{
-	return dst->ops->diff(dst, src);
-}
 
-static inline int
-fi_av_set_insert(struct fid_av_set *set, fi_addr_t addr)
-{
-	return set->ops->insert(set, addr);
-}
+int
+fi_av_set_intersect(struct fid_av_set *dst, const struct fid_av_set *src);
 
-static inline int
-fi_av_set_remove(struct fid_av_set *set, fi_addr_t addr)
-{
-	return set->ops->remove(set, addr);
-}
 
-static inline int
-fi_av_set_addr(struct fid_av_set *set, fi_addr_t *coll_addr)
-{
-	return set->ops->addr(set, coll_addr);
-}
+int
+fi_av_set_diff(struct fid_av_set *dst, const struct fid_av_set *src);
 
-static inline int
+
+int
+fi_av_set_insert(struct fid_av_set *set, fi_addr_t addr);
+
+
+int
+fi_av_set_remove(struct fid_av_set *set, fi_addr_t addr);
+
+
+int
+fi_av_set_addr(struct fid_av_set *set, fi_addr_t *coll_addr);
+
+
+int
 fi_join_collective(struct fid_ep *ep, fi_addr_t coll_addr,
 		   const struct fid_av_set *set,
-		   uint64_t flags, struct fid_mc **mc, void *context)
-{
-	struct fi_collective_addr addr;
+		   uint64_t flags, struct fid_mc **mc, void *context);
 
-	addr.set = set;
-	addr.coll_addr = coll_addr;
-	return fi_join(ep, &addr, flags | FI_COLLECTIVE, mc, context);
-}
 
-static inline ssize_t
-fi_barrier(struct fid_ep *ep, fi_addr_t coll_addr, void *context)
-{
-	return ep->collective->barrier(ep, coll_addr, context);
-}
+ssize_t
+fi_barrier(struct fid_ep *ep, fi_addr_t coll_addr, void *context);
 
-static inline ssize_t
-fi_barrier2(struct fid_ep *ep, fi_addr_t coll_addr, uint64_t flags, void *context)
-{
-	if (!flags)
-		return fi_barrier(ep, coll_addr, context);
 
-	return FI_CHECK_OP(ep->collective, struct fi_ops_collective, barrier2) ?
-		ep->collective->barrier2(ep, coll_addr, flags, context) :
-		-FI_ENOSYS;
-}
+ssize_t
+fi_barrier2(struct fid_ep *ep, fi_addr_t coll_addr, uint64_t flags, void *context);
 
-static inline ssize_t
+
+ssize_t
 fi_broadcast(struct fid_ep *ep, void *buf, size_t count, void *desc,
 	     fi_addr_t coll_addr, fi_addr_t root_addr,
-	     enum fi_datatype datatype, uint64_t flags, void *context)
-{
-	return ep->collective->broadcast(ep, buf, count, desc,
-		coll_addr, root_addr, datatype, flags, context);
-}
+	     enum fi_datatype datatype, uint64_t flags, void *context);
 
-static inline ssize_t
+
+ssize_t
 fi_alltoall(struct fid_ep *ep, const void *buf, size_t count, void *desc,
 	    void *result, void *result_desc,
 	    fi_addr_t coll_addr, enum fi_datatype datatype,
-	    uint64_t flags, void *context)
-{
-	return ep->collective->alltoall(ep, buf, count, desc,
-		result, result_desc, coll_addr, datatype, flags, context);
-}
+	    uint64_t flags, void *context);
 
-static inline ssize_t
+
+ssize_t
 fi_allreduce(struct fid_ep *ep, const void *buf, size_t count, void *desc,
 	     void *result, void *result_desc, fi_addr_t coll_addr,
 	     enum fi_datatype datatype, enum fi_op op,
-	     uint64_t flags, void *context)
-{
-	return ep->collective->allreduce(ep, buf, count, desc,
-		result, result_desc, coll_addr, datatype, op, flags, context);
-}
+	     uint64_t flags, void *context);
 
-static inline ssize_t
+
+ssize_t
 fi_allgather(struct fid_ep *ep, const void *buf, size_t count, void *desc,
 	     void *result, void *result_desc, fi_addr_t coll_addr,
-	     enum fi_datatype datatype, uint64_t flags, void *context)
-{
-	return ep->collective->allgather(ep, buf, count, desc,
-		result, result_desc, coll_addr, datatype, flags, context);
-}
+	     enum fi_datatype datatype, uint64_t flags, void *context);
 
-static inline ssize_t
+
+ssize_t
 fi_reduce_scatter(struct fid_ep *ep, const void *buf, size_t count, void *desc,
 		  void *result, void *result_desc, fi_addr_t coll_addr,
 		  enum fi_datatype datatype, enum fi_op op,
-		  uint64_t flags, void *context)
-{
-	return ep->collective->reduce_scatter(ep, buf, count, desc,
-		result, result_desc, coll_addr, datatype, op, flags, context);
-}
+		  uint64_t flags, void *context);
 
-static inline ssize_t
+
+ssize_t
 fi_reduce(struct fid_ep *ep, const void *buf, size_t count, void *desc,
 	  void *result, void *result_desc, fi_addr_t coll_addr,
 	  fi_addr_t root_addr, enum fi_datatype datatype, enum fi_op op,
-	  uint64_t flags, void *context)
-{
-	return ep->collective->reduce(ep, buf, count, desc, result, result_desc,
-		coll_addr, root_addr, datatype, op, flags, context);
-}
+	  uint64_t flags, void *context);
 
 
-static inline ssize_t
+
+ssize_t
 fi_scatter(struct fid_ep *ep, const void *buf, size_t count, void *desc,
 	   void *result, void *result_desc, fi_addr_t coll_addr,
 	   fi_addr_t root_addr, enum fi_datatype datatype,
-	   uint64_t flags, void *context)
-{
-	return ep->collective->scatter(ep, buf, count, desc, result, result_desc,
-		coll_addr, root_addr, datatype, flags, context);
-}
+	   uint64_t flags, void *context);
 
 
-static inline ssize_t
+
+ssize_t
 fi_gather(struct fid_ep *ep, const void *buf, size_t count, void *desc,
 	  void *result, void *result_desc, fi_addr_t coll_addr,
 	  fi_addr_t root_addr, enum fi_datatype datatype,
-	  uint64_t flags, void *context)
-{
-	return ep->collective->gather(ep, buf, count, desc, result, result_desc,
-		coll_addr, root_addr, datatype, flags, context);
-}
+	  uint64_t flags, void *context);
 
-static inline
+
 int fi_query_collective(struct fid_domain *domain, enum fi_collective_op coll,
-			struct fi_collective_attr *attr, uint64_t flags)
-{
-	return FI_CHECK_OP(domain->ops, struct fi_ops_domain, query_collective) ?
-		       domain->ops->query_collective(domain, coll, attr, flags) :
-		       -FI_ENOSYS;
-}
+			struct fi_collective_attr *attr, uint64_t flags);
+
 
 #endif
 

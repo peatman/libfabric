@@ -86,23 +86,14 @@ struct fi_fid_export {
 	void *context;
 };
 
-static inline int
+int
 fi_export_fid(struct fid *fid, uint64_t flags,
-	      struct fid **expfid, void *context)
-{
-	struct fi_fid_export exp;
+	      struct fid **expfid, void *context);
 
-	exp.fid = expfid;
-	exp.flags = flags;
-	exp.context = context;
-	return fi_control(fid, FI_EXPORT_FID, &exp);
-}
 
-static inline int
-fi_import_fid(struct fid *fid, struct fid *expfid, uint64_t flags)
-{
-	return fid->ops->bind(fid, expfid, flags);
-}
+int
+fi_import_fid(struct fid *fid, struct fid *expfid, uint64_t flags);
+
 
 
 /*
@@ -160,31 +151,14 @@ struct fid_logging {
 	struct fi_ops_log   *ops;
 };
 
-static inline int fi_import(uint32_t version, const char *name, void *attr,
+int fi_import(uint32_t version, const char *name, void *attr,
 			    size_t attr_len, uint64_t flags, struct fid *fid,
-			    void *context)
-{
-	struct fid *open_fid;
-	int ret;
+			    void *context);
 
-	ret = fi_open(version, name, attr, attr_len, flags, &open_fid, context);
-	if (ret != FI_SUCCESS)
-	    return ret;
 
-	ret = fi_import_fid(open_fid, fid, flags);
-	fi_close(open_fid);
-	return ret;
-}
+int fi_import_log(uint32_t version, uint64_t flags,
+				struct fid_logging *log_fid);
 
-static inline int fi_import_log(uint32_t version, uint64_t flags,
-				struct fid_logging *log_fid)
-{
-	log_fid->fid.fclass = FI_CLASS_LOG;
-	log_fid->ops->size = sizeof(struct fi_ops_log);
-
-	return fi_import(version, "logging", NULL, 0, flags, &log_fid->fid,
-			 log_fid);
-}
 
 #ifdef __cplusplus
 }

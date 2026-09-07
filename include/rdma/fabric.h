@@ -370,15 +370,11 @@ enum {
 	FI_TC_NETWORK_CTRL,
 };
 
-static inline uint32_t fi_tc_dscp_set(uint8_t dscp)
-{
-	return ((uint32_t) dscp) | FI_TC_DSCP;
-}
+uint32_t fi_tc_dscp_set(uint8_t dscp);
 
-static inline uint8_t fi_tc_dscp_get(uint32_t tclass)
-{
-	return tclass & FI_TC_DSCP ? (uint8_t) tclass : 0;
-}
+
+uint8_t fi_tc_dscp_get(uint32_t tclass);
+
 
 /* Mode bits */
 #define FI_CONTEXT		(1ULL << 59)
@@ -606,10 +602,8 @@ int fi_getinfo(uint32_t version, const char *node, const char *service,
 void fi_freeinfo(struct fi_info *info);
 struct fi_info *fi_dupinfo(const struct fi_info *info);
 
-static inline struct fi_info *fi_allocinfo(void)
-{
-	return fi_dupinfo(NULL);
-}
+struct fi_info *fi_allocinfo(void);
+
 
 struct fi_ops_fabric {
 	size_t	size;
@@ -651,10 +645,8 @@ struct fid_nic {
 #define FI_CHECK_OP(ops, opstype, op) \
 	(ops && (ops->size > offsetof(opstype, op)) && ops->op)
 
-static inline int fi_close(struct fid *fid)
-{
-	return fid->ops->close(fid);
-}
+int fi_close(struct fid *fid);
+
 
 struct fi_alias {
 	struct fid 		**fid;
@@ -714,51 +706,29 @@ enum {
 	FI_GET_MR_XPU_DESC,	/* fi_mr_xpu_desc */
 };
 
-static inline int fi_control(struct fid *fid, int command, void *arg)
-{
-	return fid->ops->control(fid, command, arg);
-}
+int fi_control(struct fid *fid, int command, void *arg);
 
-static inline int fi_alias(struct fid *fid, struct fid **alias_fid, uint64_t flags)
-{
-	struct fi_alias alias;
-	alias.fid = alias_fid;
-	alias.flags = flags;
-	return fi_control(fid, FI_ALIAS, &alias);
-}
+
+int fi_alias(struct fid *fid, struct fid **alias_fid, uint64_t flags);
+
 
 /* Provider specific names should set the uppermost bit. */
 
-static inline int fi_get_val(struct fid *fid, int name, void *val)
-{
-	struct fi_fid_var var;
-	var.name = name;
-	var.val = val;
-	return fi_control(fid, FI_GET_VAL, &var);
-}
+int fi_get_val(struct fid *fid, int name, void *val);
 
-static inline int fi_set_val(struct fid *fid, int name, void *val)
-{
-	struct fi_fid_var var;
-	var.name = name;
-	var.val = val;
-	return fi_control(fid, FI_SET_VAL, &var);
-}
 
-static inline int
+int fi_set_val(struct fid *fid, int name, void *val);
+
+
+int
 fi_open_ops(struct fid *fid, const char *name, uint64_t flags,
-	    void **ops, void *context)
-{
-	return fid->ops->ops_open(fid, name, flags, ops, context);
-}
+	    void **ops, void *context);
 
-static inline int
+
+int
 fi_set_ops(struct fid *fid, const char *name, uint64_t flags,
-	   void *ops, void *context)
-{
-	return FI_CHECK_OP(fid->ops, struct fi_ops, ops_set) ?
-		fid->ops->ops_set(fid, name, flags, ops, context) : -FI_ENOSYS;
-}
+	   void *ops, void *context);
+
 
 enum fi_type {
 	FI_TYPE_INFO,

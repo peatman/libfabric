@@ -227,7 +227,7 @@ static inline void ucx_update_memtype_cache(enum fi_hmem_iface iface,
 	 * this range.
 	 */
 	ucs_memtype_cache_update(base, size, UCS_MEMORY_TYPE_UNKNOWN,
-				 UCS_SYS_DEVICE_ID_UNKNOWN);
+				 UCS_SYS_DEVICE_ID_UNKNOWN, 0);
 }
 
 static int ucx_mr_regattr(struct fid *fid, const struct fi_mr_attr *attr,
