@@ -470,11 +470,11 @@ AC_CHECK_HEADER(valgrind/memcheck.h, [],
 fi
 
 AC_CACHE_CHECK(whether ld accepts --version-script, ac_cv_version_script,
-    [if test -n "`$LD --help < /dev/null 2>/dev/null | grep version-script`"; then
-        ac_cv_version_script=yes
-    else
-        ac_cv_version_script=no
-    fi])
+    [
+    # forced off in this fork: exported symbols (including the de-inlined
+    # fi_*/ucp_*-style API added for PEAT interception) are kept unversioned
+    ac_cv_version_script=no
+    ])
 
 AC_ARG_ENABLE([embedded],
 	      [AS_HELP_STRING([--enable-embedded],
@@ -531,20 +531,12 @@ AS_CASE([$CFLAGS],
 
 dnl Check for symbol versioning compiler + linker support.
 dnl If icc + ipo, then print disabled and skip check
+dnl Forced off in this fork: exported symbols (both original and the
+dnl de-inlined fi_*/ucp_*-style API added for PEAT interception) are kept
+dnl unversioned, matching HAVE_LD_VERSION_SCRIPT being forced off above.
 AC_MSG_CHECKING(for .symver assembler support)
-AS_IF([test "$icc_symver_hack"],
-	[AC_MSG_RESULT(disabled)],
-[
-
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[__asm__(".symver main_, main@ABIVER_1.0");]], [[]])],[
-		AC_MSG_RESULT(yes)
-		ac_asm_symver_support=1
-	],[
-		AC_MSG_RESULT(no)
-		ac_asm_symver_support=0
-	])
-
-]) dnl AS_IF icc_symver_hack
+AC_MSG_RESULT(disabled)
+ac_asm_symver_support=0
 
 AC_DEFINE_UNQUOTED([HAVE_SYMVER_SUPPORT], [$ac_asm_symver_support],
 	  	   [Define to 1 if compiler/linker support symbol versioning.])

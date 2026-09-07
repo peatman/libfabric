@@ -114,7 +114,7 @@ extern "C" {
 
 #if HAVE_ALIAS_ATTRIBUTE == 1
 #define DEFAULT_SYMVER(name, api, ver) \
-	extern typeof (name) api __attribute__((alias(#name)));
+	extern typeof (name) api __attribute__((alias(#name), visibility("default")));
 #else
 #define DEFAULT_SYMVER(name, api, ver)
 #endif  /* HAVE_ALIAS_ATTRIBUTE == 1*/
